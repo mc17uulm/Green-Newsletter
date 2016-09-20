@@ -4,10 +4,21 @@
 
 jQuery(document).ready(function($) {
 
+    function validateEmail(email){
+        var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@uni-ulm.de$/;
+        return regex.test(email);
+    }
+
     // URL zur PHP File durch welche der API-Key auf Gültigkeit überprüft wird
     var url = WPURLS.siteurl + "/wp-content/plugins/green-newsletter/lib/checkApi.php";
 
     console.log("URL: " + WPURLS.siteurl);
+
+    $('#load').hide();
+
+    if($('#key').val() == ''){
+        $("#key").css('border-color', 'none');
+    }
 
     /**
      * Sollte im Input field für den API-Key  eine Änderung stattfinden,
@@ -31,6 +42,7 @@ jQuery(document).ready(function($) {
     $("#key").typeWatch(waitTo);
 
     function checkApiKey(key) {
+        // Load gif: https://commons.wikimedia.org/wiki/File:Android_style_loader.gif
         $('#load').show();
         post_data = {
             'key': key
@@ -41,11 +53,13 @@ jQuery(document).ready(function($) {
                 $('#load').hide();
                 $('#more').hide();
                 $("#key").css('border-color', 'red');
+                $('#submit_btn').prop('disabled', true);
             } else {
                 $('#load').hide();
                 $('#more').show();
                 console.log(response.text);
-                $('#submit_btn').enable();
+                $('#submit_btn').prop('disabled', false);
+                $('#key').css('border-color', 'green');
                 for (var i = 0; i < response.text.length; i++) {
                     console.log("List: " + response.text[i]);
                     var name = response.text[i]['name'];
@@ -63,28 +77,77 @@ jQuery(document).ready(function($) {
 
     $('#submit_btn').click(function(){
         var key = $('#key').val();
-        var list = $('#lists option:selected').val();
+        var list = $('#lists option:selected').text();
+        var listID = $('#lists option:selected').val();
+        console.log("LIST: " + list + " LIST ID: " + listID);
+        if((list == null) || (list == "") || (list == null) || (list == "")){
+            $("#lists").css('border-color', 'red');
+            return false;
+        } else{
+            $("#lists").css('border-color', 'green');
+        }
         var email = $('#email').val();
+        if((email == null) || (email == "") || (validateEmail(email))){
+            $("#email").css('border-color', 'red');
+            return false;
+        } else{
+            $("#email").css('border-color', 'green');
+        }
         var emailName = $('#emailName').val();
+        if((emailName == null) || (emailName == "")){
+            $("#emailName").css('border-color', 'red');
+            return false;
+        } else{
+            $("#emailName").css('border-color', 'green');
+        }
         var subject = $('#subject').val();
+        if((subject == null) || (subject == "")){
+            $("#subject").css('border-color', 'red');
+            return false;
+        } else{
+            $("#subject").css('border-color', 'green');
+        }
         var text = $('#text').val();
+        console.log("TEXT: " + text);
+        if((text == null) || (text == "")){
+            $("#text").css('border-color', 'red');
+            return false;
+        } else{
+            $("#text").css('border-color', 'green');
+        }
         var address = $('#address').val();
-        var listID = $('#listID').val();
+        if((address == null) || (address == "")){
+            $("#address").css('border-color', 'red');
+            return false;
+        } else{
+            $("#address").css('border-color', 'green');
+        }
 
         console.log("ListID: " + listID);
 
-        if(text.indexOf("?link") == -1){
+        console.log("Index Of: " + text.toString().indexOf("?link"));
+
+        if(text.toString().indexOf("?link") == -1){
             $('#text').css('border-color', 'red');
+            return false;
+        }
+
+        var preListID = $('#listID').val();
+        var first = false;
+        if((preListID == null) || (preListID == "")){
+            first = true;
         }
 
         post_data = {
             'key': key,
             'list': list,
+            'listID': listID,
             'email': email,
             'emailName': emailName,
             'subject': subject,
             'text': text,
-            'address': address
+            'address': address,
+            'first': first
         }
         $.post(database, post_data, function(response) {
             if (response.type == 'error') {

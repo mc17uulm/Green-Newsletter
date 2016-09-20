@@ -21,11 +21,31 @@ class widget {
         $this->apiKey = $apiKey;
         $this->listID = $listID;
         $this->listName = $listName;
-        $this->fromEmail = $fromEmail;
-        $this->fromName = $fromName;
-        $this->subject = $subject;
-        $this->text = $text;
-        $this->address = $address;
+        if($fromEmail == null){
+            $this->fromEmail = "info@gruene.de";
+        } else{
+            $this->fromEmail = $fromEmail;
+        }
+        if($fromName == null){
+            $this->fromName = "Grüne";
+        } else{
+            $this->fromName = $fromName;
+        }
+        if($subject == null){
+            $this->subject = "Anmeldung Newsletter | Grüne";
+        } else{
+            $this->subject = $subject;
+        }
+        if($text == null){
+            $this->text = "Vielen Dank für Ihr Interesse an unserem Newlsetter. Um Ihre Registrierung abzuschließen, klicken Sie bitte auf folgenden Link: ?link \r\n\r\nSollten Sie sich nicht auf gruene-heidenheim.de für den Newsletter angemeldet haben, können Sie diese E-Mail ignorieren!";
+        } else{
+            $this->text = $text;
+        }
+        if($address == null){
+            $this->address = "KV Test\r\nMusterstraße 10\r\n89518 Heidenheim";
+        } else{
+            $this->address = $address;
+        }
     }
 
     /**

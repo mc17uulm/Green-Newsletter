@@ -82,6 +82,7 @@ function green_newsletter_enqueue_admin_script(){
     wp_enqueue_script('niceEdit', 'http://js.nicedit.com/nicEdit-latest.js', array(), null, false);
     wp_enqueue_script('Typewatch', $local . 'js/jquery.typewatch.js', array(), null, false);
     wp_enqueue_script('adminNewsletter', $local . 'js/edit_info.js', array(), null, false);
+    wp_enqueue_style('Newsletter Style', $local . 'css/style.css', array(), false, 'all');
     wp_localize_script('adminNewsletter', 'WPURLS', array( 'siteurl' => get_option('siteurl') ));
 
 
@@ -189,6 +190,7 @@ function edit_newsletter($atts){
 function  green_newsletter_option_page(){
 
     $widget = get_actual_widget();
+    echo $widget->getApiKey();
 
     ?>
     <div class="wrap">
@@ -200,48 +202,49 @@ function  green_newsletter_option_page(){
         </p>
         <form id="key_form" action="#">
             <table class="form-table">
-                <input id="listID" type="number" hidden value="<?php echo $widget->getListID; ?>">
+                <input id="listID" type="number" hidden value="<?php echo $widget->getListID(); ?>">
                 <tr>
                     <th scope="row"><label for="key">Api-Key:</label></th>
-                    <td><input type="text" id="key" name="key" class="regular-text" required="true" value="<?php echo $widget->getApiKey; ?>" placeholder="Api-Key eingeben" /></p><div id="load"></div></td>
+                    <td><input type="text" id="key" name="key" class="regular-text" required="true" value="<?php echo $widget->getApiKey(); ?>" placeholder="Api-Key eingeben" /></p><div hidden class="load" id="load"></div></td>
                 <tr>
                     <th scope="row"><label for="lists">Liste:</label></th>
                     <td>
                         <select class="form-control" id="lists">
                             <?php
-                            if($widget != null){ echo "<option selected value='$widget->getListID()'>$widget->getListName()</option>"; } ?>
+                            if($widget != null){ echo "<option selected value='" . $widget->getListID() . "'>" . $widget->getListName() . "</option>"; } ?>
                         </select>
                     </td>
                 </tr>
-                <div id="more" hidden>
-                <tr>
-                    <th scope="row"><label for="email">Absender E-Mail-Adresse:</label></th>
-                    <td><input type="email" id="email" name="email" class="regular-text" aria-describedby="mail-description" required="true" value="<?php echo $widget->getFromEmail; ?>" placeholder="Absender E-Mail-Adresse" />
-                        <p class="description" id="mail-description">Diese E-Mail-Adresse sollte eine Kontaktadresse für deinen KV sein (Bsp.: info@gruene-heidenheim.de)</p></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="emailName">Absender Name:</label></th>
-                    <td><input type="text" id="emailName" name="emailName" class="regular-text" aria-describedby="name-description" required value="<?php echo $widget->getFromName; ?>" placeholder="Absender" />
-                        <p class="description" id="name-description">Hier sollte der Name des KV's stehten (Bsp.: Grüne Heidenheim)</p></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="subject">Betreff:</label></th>
-                    <td><input type="text" id="subject" name="subject" class="regular-text" aria-describedby="subject-description" required value="<?php echo $widget->getSubject; ?>" placeholder="Betreff" />
-                        <p class="description" id="subject-description">Hier sollte der Betreff für die Begrüßungsmail stehen. (Bsp.: Anmeldung | Newsletter Grüne Heidenheim)</p></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="text">Text:</label></th>
-                    <td><textarea name="text" id="text" rows="5" cols="30"><?php echo $widget->getText; ?></textarea>
-                        <p class="description">Hier sollte ein individueller Begrüßungstext stehen, wie im Beispiel. (WICHTIG: den ?link-Tag nicht vergessen!)</p>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="address">Adresse:</label></th>
-                    <td>
-                        <textarea name="address" id="address" rows="5" cols="30"><?php echo $widget->getAddress; ?></textarea>
-                        <p class="description">Hier kannst du die Adresse deines KV angeben.</p>
-                    </td>
-                </tr>
+            </table>
+            <table class="form-table" id="more" hidden>
+                    <tr>
+                        <th scope="row"><label for="email">Absender E-Mail-Adresse:</label></th>
+                        <td><input type="email" id="email" name="email" class="regular-text" aria-describedby="mail-description" required="true" value="<?php echo $widget->getFromEmail(); ?>" placeholder="Absender E-Mail-Adresse" />
+                            <p class="description" id="mail-description">Diese E-Mail-Adresse sollte eine Kontaktadresse für deinen KV sein (Bsp.: info@gruene-heidenheim.de)</p></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="emailName">Absender Name:</label></th>
+                        <td><input type="text" id="emailName" name="emailName" class="regular-text" aria-describedby="name-description" required value="<?php echo $widget->getFromName(); ?>" placeholder="Absender" />
+                            <p class="description" id="name-description">Hier sollte der Name des KV's stehten (Bsp.: Grüne Heidenheim)</p></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="subject">Betreff:</label></th>
+                        <td><input type="text" id="subject" name="subject" class="regular-text" aria-describedby="subject-description" required value="<?php echo $widget->getSubject(); ?>" placeholder="Betreff" />
+                            <p class="description" id="subject-description">Hier sollte der Betreff für die Begrüßungsmail stehen. (Bsp.: Anmeldung | Newsletter Grüne Heidenheim)</p></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="text">Text:</label></th>
+                        <td><textarea name="text" id="text" rows="5" cols="70"><?php echo $widget->getText(); ?></textarea>
+                            <p class="description">Hier sollte ein individueller Begrüßungstext stehen, wie im Beispiel. (WICHTIG: den ?link-Tag nicht vergessen!)</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="address">Adresse:</label></th>
+                        <td>
+                            <textarea name="address" id="address" rows="5" cols="30"><?php echo $widget->getAddress(); ?></textarea>
+                            <p class="description">Hier kannst du die Adresse deines KV angeben.</p>
+                        </td>
+                    </tr>
                 </div>
             </table>
             <p class="submit"><input disabled type="button" name="submit" id="submit_btn" class="button button-primary" value="Änderungen übernehmen"  /></p>

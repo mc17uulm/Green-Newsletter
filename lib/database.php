@@ -27,39 +27,37 @@ if($_POST) {
 
     $key = $_POST["key"];
     $list = $_POST["list"];
+    $listID = $_POST["listID"];
     $email = $_POST["email"];
     $emailName = $_POST["emailName"];
     $subject = $_POST["subject"];
     $text = $_POST["text"];
     $address = $_POST["address"];
+    $first = $_POST["first"];
 
-    $wpdb->insert( $wpdb->$table, array(
-        "apiKey" => $key,
-        "listID" => $list,
-        "fromEmail" => $email,
-        "fromName" => $emailName,
-        "subject" => $subject,
-        "text" => $text,
-        "address" => $address
-    ));
-
-}
-
-function get_actual_widget(){
-
-    global  $wpdb;
-
-    $table = $wpdb->prefix . 'green_widgets';
-
-    $sql = "SELECT * FROM $table";
-
-    $result = $wpdb->get_result($sql) or die(mysql_error);
-
-    $out = array();
-
-    foreach( $result as $widget){
-        array_push($out, new widget($widget->apiKey, $widget->listID, $widget->listName, $widget->fromEmail, $widget->fromName, $widget->subject, $widget->text, $widget->address));
+    // TODO: Error: [client 127.0.0.1:60900] [host ...]
+    // TODO: PHP Fatal error:  Call to a member function insert() on null in .../wp-content/plugins/green-newsletter/lib/database.php on line 50
+    if(!$first){
+        $wpdb->update( $wpdb->$table, array(
+            "apiKey" => $key,
+            "listID" => $listID,
+            "listName" => $list,
+            "fromEmail" => $email,
+            "fromName" => $emailName,
+            "subject" => $subject,
+            "text" => $text,
+            "address" => $address
+        ), "WHERE listID = $listID");
+    } else{
+        $wpdb->insert( $wpdb->$table, array(
+            "apiKey" => $key,
+            "listID" => $listID,
+            "listName" => $list,
+            "fromEmail" => $email,
+            "fromName" => $emailName,
+            "subject" => $subject,
+            "text" => $text,
+            "address" => $address
+        ), null);
     }
-
-    return $out[0];
 }

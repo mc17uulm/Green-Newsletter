@@ -6,6 +6,8 @@
  * Time: 19:16
  */
 
+include_once 'widget.php';
+
 function getKey($int){
     $length = mb_strlen($int);
     $tmp = (String) $int;
@@ -114,4 +116,20 @@ function getBool($val){
     } else{
         return "";
     }
+}
+
+function get_actual_widget(){
+
+    global  $wpdb;
+
+    $table = $wpdb->prefix . 'green_widgets';
+
+    $sql = "SELECT * FROM $table";
+
+    $result = $wpdb->get_results($sql, ARRAY_A);
+
+    $widget = $result[0];
+    $out = new widget($widget['apiKey'], $widget['listID'], $widget['listName'], $widget['fromEmail'], $widget['fromName'], $widget['subject'], $widget['text'], $widget['address']);
+
+    return $out;
 }

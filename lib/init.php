@@ -29,11 +29,12 @@ function initNewsletter(){
     $sql = "CREATE TABLE $table (
             `apiKey` VARCHAR(155) NOT NULL,
             `listID` INT NOT NULL,
-            `fromEmail` VARCHAR(55) NULL DEFAULT 'Grüne',
-            `fromName` VARCHAR(45) NULL DEFAULT 'info@gruene.de',
-            `subject` VARCHAR(75) NULL DEFAULT 'Anmeldung Newsletter',
-            `text` TEXT NULL DEFAULT 'Vielen Dank für Ihr Interesse an unserem Newlsetter. Um Ihre Registrierung abzuschließen,<br/>klicken Sie bitte auf folgenden Link: ?link <br />Sollten Sie sich nicht auf gruene-heidenheim.de für den Newsletter angemeldet haben, können Sie diese E-Mail ignorieren!<br />',
-            `adress` TEXT NULL DEFAULT 'KV Test<br/>Musterstraße 10<br/>89518 Heidenheim',
+            `listName` VARCHAR(55) NOT NULL,
+            `fromEmail` VARCHAR(55) NOT NULL,
+            `fromName` VARCHAR(45) NOT NULL,
+            `subject` VARCHAR(75) NOT NULL,
+            `text` TEXT NOT NULL,
+            `adress` TEXT NOT NULL,
             PRIMARY KEY (`apiKey`, `listID`)
             )$charset_collate;";
 

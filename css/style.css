@@ -17,45 +17,9 @@
     background-image: url('../img/error.png');
 }
 
-/* remove standard-styles */
-input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border:none;
-    border-radius: 0;
-    font-size: 1em;
-    width: 100%
-}
-
-/* graceful degradation for ie8 */
-input[type='checkbox'],
-input[type='radio'] {
-    width:auto;
-    float:left;
-    margin-right: .75em;
-    background:transparent;
-    border:none;
-}
-
-input[type='checkbox']:checked,
-input[type='checkbox']:not(:checked),
-input[type='radio']:checked,
-input[type='radio']:not(:checked) {
-    background: transparent;
-    position: relative;
-    visibility: hidden;
-    margin:0;
-    padding:0;
-}
-
-input[type='checkbox'] + label,
-input[type='radio'] + label {
-    cursor: pointer;
-}
-
-input[type="text"],
-input[type="email"]{
+.prename,
+.lastname,
+.email{
     display: block;
     margin: 0;
     width: 90%;
@@ -65,8 +29,9 @@ input[type="email"]{
     box-shadow: none;
     border-radius: none;
 }
-input[type="text"],
-input[type="email"]:focus {
+.prename,
+.lastname,
+.email:focus {
     outline: none;
 }
 .style-1 input[type="text"],
@@ -141,6 +106,10 @@ input[type="email"]:focus {
 .errorBtn:active {
     position:relative;
     top:1px;
+}
+
+.load{
+    background:url(../img/loading.gif) no-repeat center right;width:32px;height:32px;
 }
 
 
