@@ -12,12 +12,12 @@ jQuery(document).ready(function($) {
     // URL zur PHP File durch welche der API-Key auf Gültigkeit überprüft wird
     var url = WPURLS.siteurl + "/wp-content/plugins/green-newsletter/lib/checkApi.php";
 
-    console.log("URL: " + WPURLS.siteurl);
-
     $('#load').hide();
 
     if($('#key').val() == ''){
         $("#key").css('border-color', 'none');
+    } else{
+        checkApiKey($('#key').val());
     }
 
     /**
@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
         highlight: true,
         allowSubmit: true,
         captureLength: 30
-    }
+    };
 
 
     $("#key").typeWatch(waitTo);
@@ -107,6 +107,7 @@ jQuery(document).ready(function($) {
         } else{
             $("#subject").css('border-color', 'green');
         }
+        console.log("Subject: " + subject);
         var text = $('#text').val();
         console.log("TEXT: " + text);
         if((text == null) || (text == "")){
@@ -132,13 +133,16 @@ jQuery(document).ready(function($) {
             return false;
         }
 
-        var preListID = $('#listID').val();
+        var ID = $('#ID').val();
         var first = false;
-        if((preListID == null) || (preListID == "")){
+        if((ID == null) || (ID == "")){
             first = true;
         }
 
+        console.log("First: " + first);
+
         post_data = {
+            'id': ID,
             'key': key,
             'list': list,
             'listID': listID,
@@ -148,13 +152,13 @@ jQuery(document).ready(function($) {
             'text': text,
             'address': address,
             'first': first
-        }
+        };
         $.post(database, post_data, function(response) {
-            if (response.type == 'error') {
-                console.log("false");
-            } else {
-                console.log("true");
+            if(response.type == 'success'){
+                console.log(response.text);
+            } else{
+                console.log(response.text);
             }
         }, 'json');
     });
-})
+});

@@ -27,6 +27,7 @@ function initNewsletter(){
      * der Bestätigungsemails benötigt werden.
      */
     $sql = "CREATE TABLE $table (
+            `ID` INT NOT NULL AUTO_INCREMENT,
             `apiKey` VARCHAR(155) NOT NULL,
             `listID` INT NOT NULL,
             `listName` VARCHAR(55) NOT NULL,
@@ -34,8 +35,8 @@ function initNewsletter(){
             `fromName` VARCHAR(45) NOT NULL,
             `subject` VARCHAR(75) NOT NULL,
             `text` TEXT NOT NULL,
-            `adress` TEXT NOT NULL,
-            PRIMARY KEY (`apiKey`, `listID`)
+            `address` TEXT NOT NULL,
+            PRIMARY KEY (`ID`)
             )$charset_collate;";
 
     require_once (ABSPATH . 'wp-admin/includes/upgrade.php');

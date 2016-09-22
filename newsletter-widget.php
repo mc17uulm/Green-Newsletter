@@ -190,7 +190,6 @@ function edit_newsletter($atts){
 function  green_newsletter_option_page(){
 
     $widget = get_actual_widget();
-    echo $widget->getApiKey();
 
     ?>
     <div class="wrap">
@@ -202,7 +201,7 @@ function  green_newsletter_option_page(){
         </p>
         <form id="key_form" action="#">
             <table class="form-table">
-                <input id="listID" type="number" hidden value="<?php echo $widget->getListID(); ?>">
+                <input id="ID" type="text" hidden value="<?php echo $widget->getID(); ?>">
                 <tr>
                     <th scope="row"><label for="key">Api-Key:</label></th>
                     <td><input type="text" id="key" name="key" class="regular-text" required="true" value="<?php echo $widget->getApiKey(); ?>" placeholder="Api-Key eingeben" /></p><div hidden class="load" id="load"></div></td>

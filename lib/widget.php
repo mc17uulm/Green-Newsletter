@@ -8,6 +8,7 @@
  */
 class widget {
 
+    private $ID;
     private $apiKey;
     private $listID;
     private $listName;
@@ -17,7 +18,8 @@ class widget {
     private $text;
     private $address;
 
-    public function __construct($apiKey, $listID, $listName, $fromEmail, $fromName, $subject, $text, $address){
+    public function __construct($ID, $apiKey, $listID, $listName, $fromEmail, $fromName, $subject, $text, $address){
+        $this->ID = $ID;
         $this->apiKey = $apiKey;
         $this->listID = $listID;
         $this->listName = $listName;
@@ -46,6 +48,10 @@ class widget {
         } else{
             $this->address = $address;
         }
+    }
+
+    public function getID(){
+        return $this->ID;
     }
 
     /**

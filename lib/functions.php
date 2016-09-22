@@ -129,7 +129,7 @@ function get_actual_widget(){
     $result = $wpdb->get_results($sql, ARRAY_A);
 
     $widget = $result[0];
-    $out = new widget($widget['apiKey'], $widget['listID'], $widget['listName'], $widget['fromEmail'], $widget['fromName'], $widget['subject'], $widget['text'], $widget['address']);
+    $out = new widget($widget['ID'], $widget['apiKey'], $widget['listID'], $widget['listName'], $widget['fromEmail'], $widget['fromName'], $widget['subject'], $widget['text'], $widget['address']);
 
     return $out;
 }
