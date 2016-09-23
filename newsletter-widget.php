@@ -73,15 +73,16 @@ function green_newsletter_enqueue_script(){
 
     global $local;
 
-    wp_enqueue_script('Newsletter', $local . 'js/newsletter.js', array(), null, false);
+    wp_enqueue_script('Newsletter', $local . 'js/newsletter.js', array('jquery'), null, false);
+    wp_localize_script('Newsletter', 'WPURLS', array( 'siteurl' => get_option('siteurl') ));
 }
 
 function green_newsletter_enqueue_admin_script(){
 
     global $local;
-    wp_enqueue_script('niceEdit', 'http://js.nicedit.com/nicEdit-latest.js', array(), null, false);
-    wp_enqueue_script('Typewatch', $local . 'js/jquery.typewatch.js', array(), null, false);
-    wp_enqueue_script('adminNewsletter', $local . 'js/edit_info.js', array(), null, false);
+    wp_enqueue_script('niceEdit', 'http://js.nicedit.com/nicEdit-latest.js', array('jquery'), null, false);
+    wp_enqueue_script('Typewatch', $local . 'js/jquery.typewatch.js', array('jquery'), null, false);
+    wp_enqueue_script('adminNewsletter', $local . 'js/edit_info.js', array('jquery'), null, false);
     wp_enqueue_style('Newsletter Style', $local . 'css/style.css', array(), false, 'all');
     wp_localize_script('adminNewsletter', 'WPURLS', array( 'siteurl' => get_option('siteurl') ));
 
@@ -98,6 +99,8 @@ add_action( 'admin_enqueue_scripts', 'green_newsletter_enqueue_admin_script' );
  * Diese Funktion erstellt den HTML Code für den [newsletter] Shortcode
  */
 function newsletter_shortcode($atts){
+
+    global $local;
 
     // Formular, in welches der Nutzer seinen Vor- und Nachnamen, sowie seine E-Mail-Adresse eingibt
     $out = "<h2>Newsletter:</h2>" .
@@ -116,8 +119,7 @@ function newsletter_shortcode($atts){
             "</fieldset><br />" .
             "<button type=\"button\" id=\"submit_newsletter\" class=\"newsletterBtn\">Abschicken</button>" .
 
-            "<img hidden src=\"http://gruene-heidenheim.de/wp-content/plugins/green-newsletter/img/loading.gif\">" .
-            "<div hidden id=\"load\" style=\"background:url(http://gruene-heidenheim.de/wp-content/plugins/green-newsletter/img/loading.gif) no-repeat center right;width:32px;height:32px;\"></div>" .
+            "<div hidden id=\"load\" style=\"background:url(" . get_option('siteurl') . $local . "/img/loading.gif) no-repeat center right;width:32px;height:32px;\"></div>" .
             "</form>" .
 
             "<div hidden class=\"errorNL\" id=\"errorNL\"></div>".
@@ -150,7 +152,10 @@ function newsletter_unsubscribe($atts){
 }
 
 function newsletter_subscribe($atts){
+
     global $server;
+    global $local;
+
     if(isset($_GET['key'])){
         $key = $_GET['key'];
 
@@ -158,7 +163,7 @@ function newsletter_subscribe($atts){
         $out = subscribe($key);
         if($out == "success"){
             return "<div class=\"successNL\" id=\"successNL\"><p>Sie haben Ihre Registrierung abgeschlossen<br />".
-                    "Weitere Optionen: <a href='http://gruene-heidenheim.de/unsubscribe?key=" . $key . "'>Abmelden</a>" . "</p></div>";
+                    "Weitere Optionen: <a href='" . get_option('siteurl') .  $local . "/unsubscribe?key=" . $key . "'>Abmelden</a>" . "</p></div>";
         } else{
             return "<div class=\"errorNL\" id=\"errorNL\"><p>Leider gab es ein Problem. Versuchen Sie es bitte noch einmal,<br />" .
                     "oder kontaktieren Sie den Administrator! " . $out . "</p></div>";
@@ -199,6 +204,8 @@ function  green_newsletter_option_page(){
             Nach Eingabe des Schlüßels, kannst du die Liste auswählen, in welche die<br />
             neuen Abonnenten eingetragen werden sollen.
         </p>
+        <div hidden class="errorNL" id="errorNL"></div>
+        <div hidden class="successNL" id="successNL"></div>
         <form id="key_form" action="#">
             <table class="form-table">
                 <input id="ID" type="text" hidden value="<?php echo $widget->getID(); ?>">

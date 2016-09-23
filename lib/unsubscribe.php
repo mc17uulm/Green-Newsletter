@@ -17,19 +17,16 @@ if($_POST){
             'type' => 'error',
             'text' => 'Sorry Request must be Ajax POST'
         ));
-        logger("unsubscribe.php:13", "ERROR", "REQUEST IS NO AJAX POST");
         die($output);
     }
 
     $key = $_POST["key"];
-    $id = getID($key);
+    $id = get_userID($key);
 
-    logger("unsubscribe.php", "INFO", "ID: $id");
-
-    $code = new API();
-    $wsdl = $code -> getSoapUrl();
-    $apiKey = $code -> getApiKey();
-    $listId = $code -> getListID();
+    $widget = get_actual_widget();
+    $wsdl = $widget -> getURL();
+    $apiKey = $widget -> getApiKey();
+    $listId = $widget -> getListID();
 
     $api = new SoapClient($wsdl);
 
@@ -37,7 +34,6 @@ if($_POST){
         $result = $api->receiverGetById($apiKey, $listId, $id, 1);
     } catch(Exception $e){
         $output = json_encode(array('type' => 'message', 'text' => $e->getMessage()));
-        logger("unsubscribe.php:35", "EXCEPTION", $e->getMessage());
         die($output);
     }
 
@@ -47,23 +43,19 @@ if($_POST){
             $result = $api->receiverSetInactive($apiKey, $listId, $email);
         } catch (Exception $e){
             $output = json_encode(array('type' => 'error', 'text' => $e->getMessage()));
-            logger("unsubscribe.php:45", "EXCEPTION", $e->getMessage());
             die($output);
         }
         if($result->status=="SUCCESS"){
             $output = json_encode(array('type' => 'message', 'text' => 'success'));
-            logger("unsubscribe.php", "INFO", "UNSUBSCRIBE $email");
             $name = $result->data->globalAtributes;
             sendUnsubscription($email, $name[0]->value, $name[1]->value);
             die($output);
         } else{
             $output = json_encode(array('type' => 'message', 'text' => 'error_delete'));
-            logger("unsubscribe.php:51", "ERROR", "RESULT STATUS: ERROR");
             die($output);
         }
     }else{
         $output = json_encode(array('type' => 'message', 'text' => $id));
-        logger("unsubscribe.php:42", "ERROR", "RESULT STATUS: ERROR");
         die($output);
     }
 }

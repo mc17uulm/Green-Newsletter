@@ -155,9 +155,13 @@ jQuery(document).ready(function($) {
         };
         $.post(database, post_data, function(response) {
             if(response.type == 'success'){
-                console.log(response.text);
+                console.log(response.type);
+                $('#successNL').show();
+                $('#successNL').text("Die Änderungen wurden gespeichert.");
             } else{
-                console.log(response.text);
+                console.log(response.type);
+                $('#errorNL').show();
+                $('#errorNL').text("Leider gab es einen Fehler!");
             }
         }, 'json');
     });

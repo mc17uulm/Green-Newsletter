@@ -10,6 +10,7 @@ class widget {
 
     private $ID;
     private $apiKey;
+    private $url;
     private $listID;
     private $listName;
     private $fromEmail;
@@ -21,6 +22,7 @@ class widget {
     public function __construct($ID, $apiKey, $listID, $listName, $fromEmail, $fromName, $subject, $text, $address){
         $this->ID = $ID;
         $this->apiKey = $apiKey;
+        $this->url = "http://api.cleverreach.com/soap/interface_v5.1.php?wsdl";
         $this->listID = $listID;
         $this->listName = $listName;
         if($fromEmail == null){
@@ -62,12 +64,8 @@ class widget {
         return $this->apiKey;
     }
 
-    /**
-     * @param mixed $apiKey
-     */
-    public function setApiKey($apiKey)
-    {
-        $this->apiKey = $apiKey;
+    public function getURL(){
+        return $this->url;
     }
 
     /**
@@ -79,27 +77,11 @@ class widget {
     }
 
     /**
-     * @param mixed $listID
-     */
-    public function setListID($listID)
-    {
-        $this->listID = $listID;
-    }
-
-    /**
      * @return mixed
      */
     public function getListName()
     {
         return $this->listName;
-    }
-
-    /**
-     * @param mixed $listName
-     */
-    public function setListName($listName)
-    {
-        $this->listName = $listName;
     }
 
     /**
@@ -111,27 +93,11 @@ class widget {
     }
 
     /**
-     * @param mixed $fromEmail
-     */
-    public function setFromEmail($fromEmail)
-    {
-        $this->fromEmail = $fromEmail;
-    }
-
-    /**
      * @return mixed
      */
     public function getFromName()
     {
         return $this->fromName;
-    }
-
-    /**
-     * @param mixed $fromName
-     */
-    public function setFromName($fromName)
-    {
-        $this->fromName = $fromName;
     }
 
     /**
@@ -143,14 +109,6 @@ class widget {
     }
 
     /**
-     * @param mixed $subject
-     */
-    public function setSubject($subject)
-    {
-        $this->subject = $subject;
-    }
-
-    /**
      * @return mixed
      */
     public function getText()
@@ -159,27 +117,11 @@ class widget {
     }
 
     /**
-     * @param mixed $text
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-    }
-
-    /**
      * @return mixed
      */
     public function getAddress()
     {
         return $this->address;
-    }
-
-    /**
-     * @param mixed $address
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
     }
 
 

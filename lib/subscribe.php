@@ -12,14 +12,12 @@ include_once 'log.php';
 
 function subscribe($key){
 
-    $id = getID($key);
+    $id = get_userID($key);
+    $widget = get_actual_widget();
 
-    logger("subscribe.php", "INFO", "ID: $id");
-
-    $code = new API();
-    $wsdl = $code -> getSoapUrl();
-    $apiKey = $code -> getApiKey();
-    $listId = $code -> getListID();
+    $wsdl = $widget -> getURL();
+    $apiKey = $widget -> getApiKey();
+    $listId = $widget -> getListID();
 
     $api = new SoapClient($wsdl);
 
@@ -27,7 +25,6 @@ function subscribe($key){
         $result = $api->receiverGetById($apiKey, $listId, $id, 1);
     } catch(Exception $e){
         $out = "ID: " . $id . " EXEP: " . $e->getMessage();
-        logger("subscribe.php:25", "EXCEPTION", $e->getMessage());
         return $out;
     }
 
@@ -37,17 +34,14 @@ function subscribe($key){
             $result = $api->receiverSetActive($apiKey, $listId, $email);
         } catch (Exception $e){
             $out = "EMAIL: " . $email . " EXEP: " . $e->getMessage();
-            logger("subscribe.php:35", "EXCEPTION", $e->getMessage());
             return $out;
         }
         if($result->status=="SUCCESS"){
            return "success";
         } else{
-            logger("subscribe.php:41", "ERROR", "RESULT STATUS: ERROR");
             return "error";
         }
     }else{
-        logger("subscribe.php:32", "ERROR", "RESULT STATUS: ERROR");
         return $result->message;
     }
 }

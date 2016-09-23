@@ -8,106 +8,12 @@
 
 include_once 'widget.php';
 
-function getKey($int){
-    $length = mb_strlen($int);
-    $tmp = (String) $int;
-    $final = array();
-    for($i = 0; $i < $length; $i++){
-        $four = inFourBitBin($tmp[$i]);
-        $rev = returnBin($four);
-        $dec = binToDec($rev);
-        $dec += 240;
-        $bin = inEightBitBin($dec);
-        $out = array();
-        for($j = 0; $j < 4; $j++){
-            $tmp_arr = array($bin[$j*2], $bin[($j*2)+1]);
-            array_push($out, binToDec($tmp_arr));
-        }
-        array_push($final, implode($out));
-    }
-    return implode($final);
-}
+$parse_uri = $_SERVER["DOCUMENT_ROOT"] . "/" . explode( 'wp-content',str_replace($_SERVER["DOCUMENT_ROOT"],'', str_replace('\\','/',__FILE__ ) ) )[0];
+require_once( $parse_uri . 'wp-load.php' );
 
 
-function getID($int){
-    $length = mb_strlen($int);
-    $arr = array();
-    $str = (String) $int;
-    for($i = 0; $i < $length; $i++){
-        $tmp = inTwoBitBin($str[$i]);
-        array_push($arr, $tmp[0]);
-        array_push($arr, $tmp[1]);
-    }
-    $out = array();
-    for($j = 0; $j < (count($arr)/8); $j++){
-        $num = array_slice($arr, ($j*8), 8);
-        $dec = binToDec($num);
-        $dec = $dec - 240;
-        $bin = inFourBitBin($dec);
-        $rev = returnBin($bin);
-        $dez = binToDec($rev);
-        array_push($out, $dez);
-    }
-    return implode($out);
-}
-
-function intToBin($int){
-    $tmp = array();
-    while($int != 0){
-        array_push($tmp, $int%2);
-        $int = floor($int/2);
-    }
-    return array_reverse($tmp);
-}
-
-function inTwoBitBin($int){
-    $arr = intToBin($int);
-    if(count($arr) < 2){
-        $tmp = array_reverse($arr);
-        for($i = 0; $i < (2 - count($arr)); $i++){
-            array_push($tmp, 0);
-        }
-        $arr = array_reverse($tmp);
-    }
-    return $arr;
-}
-
-function inFourBitBin($int){
-    $arr = intToBin($int);
-    if(count($arr) < 4){
-        $tmp = array_reverse($arr);
-        for($i = 0; $i < (4 - count($arr)); $i++){
-            array_push($tmp, 0);
-        }
-        $arr = array_reverse($tmp);
-    }
-    return $arr;
-}
-
-function returnBin($bin){
-    return array_reverse($bin);
-}
-
-function inEightBitBin($int){
-    $arr = intToBin($int);
-    if(count($arr) < 4){
-        $tmp = array_reverse($arr);
-        for($i = 0; $i < (8 - count($arr)); $i++){
-            array_push($tmp, 0);
-        }
-        $arr = array_reverse($tmp);
-    }
-    return $arr;
-}
-
-function binToDec($bin){
-    $index = 1;
-    $sum = 0;
-    for($i = count($bin) - 1; $i >= 0; $i--){
-        $sum += $bin[$i] * $index;
-        $index = $index * 2;
-    }
-    return $sum;
+function makeKey(){
+    return md5(uniqid(rand(), true));
 }
 
 function getBool($val){
@@ -116,6 +22,48 @@ function getBool($val){
     } else{
         return "";
     }
+}
+
+function get_HTML_Mail_Text($widget, $key){
+    $rawText = $widget -> getText();
+    $indexArr = strpos_r($rawText, "?link");
+    $link = "" . get_option('siteurl') . "/subscribe?key=$key";
+
+    $htmlText = "<html><body><h3>" . $widget -> getSubject() . "</h3><br />";
+    $htmlText .= "<p>" . getLinkInText($rawText, $indexArr, $link) . "</p><br />";
+    $htmlText .= "-------------------<br /><small>" . $widget -> getAddress() . "</small></body></html>";
+
+    return $htmlText;
+
+}
+
+function strpos_r($haystack, $needle)
+{
+    if(strlen($needle) > strlen($haystack)) {
+        return array();
+    }
+
+    $seeks = array();
+    while($seek = strripos($haystack, $needle))
+    {
+        array_push($seeks, $seek);
+        $haystack = substr($haystack, 0, $seek);
+    }
+    return $seeks;
+}
+
+function getLinkInText($text, $arr, $link){
+
+    $link = "<a href='" . $link . "'>Bestätigen</a>";
+
+    $size = sizeof($arr);
+    $out = $text;
+
+    for($i = 0; $i < $size; $i++){
+        $out = substr($out, 0, $arr[$i]) . $link . substr($out, $arr[$i] + 5, strlen($out));
+    }
+
+    return $out;
 }
 
 function get_actual_widget(){
@@ -130,6 +78,44 @@ function get_actual_widget(){
 
     $widget = $result[0];
     $out = new widget($widget['ID'], $widget['apiKey'], $widget['listID'], $widget['listName'], $widget['fromEmail'], $widget['fromName'], $widget['subject'], $widget['text'], $widget['address']);
+
+    return $out;
+}
+
+function create_new_key($key, $userID){
+    global $wpdb;
+
+    $table = $wpdb->prefix . 'green_keys';
+    try {
+        $wpdb->insert($table, array(
+            "key" => $key,
+            "userID" => $userID
+        ));
+        $output = json_encode(array(
+            'type' => 'success',
+            'text' => 'insert Database'
+        ));
+        die($output);
+    } catch(Exception $e){
+        $output = json_encode(array(
+            'type' => 'error',
+            'text' => 'Exception: ' . $e->getMessage()
+        ));
+        die($output);
+    }
+}
+
+function get_userID($key){
+    global  $wpdb;
+
+    $table = $wpdb->prefix . 'green_keys';
+
+    $sql = "SELECT * FROM $table WHERE key = $key";
+
+    $result = $wpdb->get_results($sql, ARRAY_A);
+
+    $key = $result[0];
+    $out = new key($key['ID'], $key['key'], $key['userID']);
 
     return $out;
 }

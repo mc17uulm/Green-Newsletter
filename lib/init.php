@@ -48,7 +48,7 @@ function initNewsletter(){
      * beim aktivieren/deaktivieren ihrer Accounts identifizeren können.
      */
     $sql = "CREATE TABLE $table (
-            `ID` INT NOT NULL,
+            `ID` INT NOT NULL AUTO_INCREMENT,
             `key` VARCHAR(255) NOT NULL,
             `userID` INT NOT NULL,
             PRIMARY KEY (`ID`)
@@ -84,16 +84,16 @@ function initNewsletter(){
         'post_type' => 'page'
     );
 
-    wp_insert_post($subscribe, $wp_error = false);
-    wp_insert_post($unsubscribe, $wp_error = false);
+    $subID = wp_insert_post($subscribe, $wp_error = false);
+    $unsubID = wp_insert_post($unsubscribe, $wp_error = false);
 
 
 }
 
 function deleteNewsletter(){
 
-    $pages = get_pages( array('post_title' => 'Subscribe', 'post_content' => '[subscribe]') );
-    $pages .= get_pages( array('post_title' => 'Unsubscribe', 'post_content' => '[unsubscribe]') );
+    $pages = get_pages( array('post_content' => '[subscribe]') );
+    $pages .= get_pages( array('post_content' => '[unsubscribe]') );
 
     foreach ( $pages as $page ) {
 
