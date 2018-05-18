@@ -2,9 +2,9 @@
 /*
 Plugin Name: Green Newsletter Widget
 Description: This plugin creates a input form to add new subscribers to the newsletter service
-Author: wilka_2000
-Author URI: https://creativehtml.de/
-Version: 1.0
+Author: mc17uulm
+Author URI: https://combosch.de
+Version: 2.0
 License: GPLv3
 
 === License Information ===
@@ -24,8 +24,8 @@ along with Newsletter Widget. If not, see http://www.gnu.org/licenses/gpl-3.0.ht
 
 === Plugin Information ===
 
-Version: 1.0
-Date: 28.08.2016
+Version: 2.0
+Date: 18.05.2018
 Sollte es Probleme, Fehler oder Anmerkungen zu diesem Plugin geben, so kontaktieren Sie mich bitte unter: marco[dot]combosch[at]uni-ulm[dot]de
 
  */
@@ -39,26 +39,28 @@ Sollte es Probleme, Fehler oder Anmerkungen zu diesem Plugin geben, so kontaktie
  */
 
 // Einbinden der benötigten Klassen
-include_once 'lib/subscribe.php';
-include_once 'lib/get.php';
-include_once 'lib/init.php';
-include_once 'lib/widget.php';
+// include_once 'lib/subscribe.php';
+// include_once 'lib/get.php';
+// include_once 'lib/init.php';
+// include_once 'lib/widget.php';
+
+require_once 'classes/Shortcode.class.php';
 
 // Name des Servers
 $server = $_SERVER['SERVER_NAME'];
 
-register_activation_hook(__FILE__, 'green_newsletter_create_db');
-register_deactivation_hook(__FILE__, 'green_newsletter_uninstall');
+// register_activation_hook(__FILE__, 'green_newsletter_create_db');
+// register_deactivation_hook(__FILE__, 'green_newsletter_uninstall');
 
-function green_newsletter_create_db(){
+// function green_newsletter_create_db(){
 
-    initNewsletter();
+//     initNewsletter();
 
-}
+// }
 
-function green_newsletter_uninstall(){
-    deleteNewsletter();
-}
+// function green_newsletter_uninstall(){
+//     deleteNewsletter();
+// }
 
 $local = '/wp-content/plugins/green-newsletter/';
 
@@ -73,25 +75,26 @@ function green_newsletter_enqueue_script(){
 
     global $local;
 
-    wp_enqueue_script('Newsletter', $local . 'js/newsletter.js', array('jquery'), null, false);
+    wp_enqueue_script('Newsletter', $local . 'js/App.js', array('jquery'), null, false);
     wp_localize_script('Newsletter', 'WPURLS', array( 'siteurl' => get_option('siteurl') ));
-}
-
-function green_newsletter_enqueue_admin_script(){
-
-    global $local;
-    wp_enqueue_script('niceEdit', 'http://js.nicedit.com/nicEdit-latest.js', array('jquery'), null, false);
-    wp_enqueue_script('Typewatch', $local . 'js/jquery.typewatch.js', array('jquery'), null, false);
-    wp_enqueue_script('adminNewsletter', $local . 'js/edit_info.js', array('jquery'), null, false);
-    wp_enqueue_style('Newsletter Style', $local . 'css/style.css', array(), false, 'all');
-    wp_localize_script('adminNewsletter', 'WPURLS', array( 'siteurl' => get_option('siteurl') ));
-
 
 }
+
+// function green_newsletter_enqueue_admin_script(){
+
+//     global $local;
+//     wp_enqueue_script('niceEdit', 'http://js.nicedit.com/nicEdit-latest.js', array('jquery'), null, false);
+//     wp_enqueue_script('Typewatch', $local . 'js/jquery.typewatch.js', array('jquery'), null, false);
+//     wp_enqueue_script('adminNewsletter', $local . 'js/edit_info.js', array('jquery'), null, false);
+//     wp_enqueue_style('Newsletter Style', $local . 'css/style.css', array(), false, 'all');
+//     wp_localize_script('adminNewsletter', 'WPURLS', array( 'siteurl' => get_option('siteurl') ));
+
+
+// }
 
 add_action( 'wp_enqueue_scripts', 'green_newsletter_enqueue_style' );
 add_action( 'wp_enqueue_scripts', 'green_newsletter_enqueue_script' );
-add_action( 'admin_enqueue_scripts', 'green_newsletter_enqueue_admin_script' );
+// add_action( 'admin_enqueue_scripts', 'green_newsletter_enqueue_admin_script' );
 
 /**
  * @param $atts
@@ -100,32 +103,7 @@ add_action( 'admin_enqueue_scripts', 'green_newsletter_enqueue_admin_script' );
  */
 function newsletter_shortcode($atts){
 
-    global $local;
-
-    // Formular, in welches der Nutzer seinen Vor- und Nachnamen, sowie seine E-Mail-Adresse eingibt
-    $out = "<h2>Newsletter:</h2>" .
-           "<form id=\"newsletter_form\" class=\"style-1\">" .
-            "<fieldset class=\"form-group\">".
-                "<label>Vorname:</label>" . 
-                "<input type=\"text\" id=\"prename\" name=\"prename\" class=\"form-control\" required=\"true\" placeholder=\"Vorname\">" .
-			"</fieldset>" .
-            "<fieldset class=\"form-group\">".
-                "<label>Nachname:</label>" .
-                "<input type=\"text\" id=\"lastname\" name=\"lastname\" class=\"form-control\" required=\"true\" placeholder=\"Nachname\">" .
-            "</fieldset>" .
-            "<fieldset class=\"form-group\">".
-                "<label>Email:</label>" .
-                "<input type=\"email\" id=\"email\" name=\"email\" class=\"form-control\" required=\"true\" placeholder=\"E-mail\">" .
-            "</fieldset><br />" .
-            "<button type=\"button\" id=\"submit_newsletter\" class=\"newsletterBtn\">Abschicken</button>" .
-
-            "<div hidden id=\"load\" style=\"background:url(" . get_option('siteurl') . $local . "/img/loading.gif) no-repeat center right;width:32px;height:32px;\"></div>" .
-            "</form>" .
-
-            "<div hidden class=\"errorNL\" id=\"errorNL\"></div>".
-            "<div hidden class=\"successNL\" id=\"successNL\"></div>";
-
-    return $out;
+   Shortcode::render("standard", "Newsletter");
     
 }
 
@@ -264,7 +242,7 @@ function newsletter_add_menu(){
     add_options_page('Green Newsletter Plugin', 'Green Newsletter', 9, __FILE__, 'green_newsletter_option_page');
 }
 
-add_action('admin_menu', 'newsletter_add_menu');
+// add_action('admin_menu', 'newsletter_add_menu');
 
 /**
  * Dadurch kann der Newsletter Shortcode [newsletter] auch
@@ -274,8 +252,8 @@ add_filter('widget_text','do_shortcode');
 
 // Shortcode wird in Wordpress eingebunden
 add_shortcode('newsletter', 'newsletter_shortcode');
-add_shortcode('unsubscribe', 'newsletter_unsubscribe');
-add_shortcode('subscribe', 'newsletter_subscribe');
+// add_shortcode('unsubscribe', 'newsletter_unsubscribe');
+// add_shortcode('subscribe', 'newsletter_subscribe');
 //add_shortcode('edit_newsletter', 'edit_newsletter');
 
 ?>

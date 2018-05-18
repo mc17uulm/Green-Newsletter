@@ -7,7 +7,7 @@
  */
 
 include_once 'functions.php';
-include_once 'api.php';
+// include_once 'api.php';
 include_once 'log.php';
 
 function subscribe($key){
