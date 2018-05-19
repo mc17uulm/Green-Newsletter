@@ -1,2 +1,4 @@
 .idea/*
 .idea/workspace.xml
+.lib/config.php
+/lib/config.php

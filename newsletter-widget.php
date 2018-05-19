@@ -45,22 +45,19 @@ Sollte es Probleme, Fehler oder Anmerkungen zu diesem Plugin geben, so kontaktie
 // include_once 'lib/widget.php';
 
 require_once 'classes/Shortcode.class.php';
+require_once 'classes/App.class.php';
 
 // Name des Servers
 $server = $_SERVER['SERVER_NAME'];
 
-// register_activation_hook(__FILE__, 'green_newsletter_create_db');
+register_activation_hook(__FILE__, 'green_newsletter_initalize');
 // register_deactivation_hook(__FILE__, 'green_newsletter_uninstall');
 
-// function green_newsletter_create_db(){
+function green_newsletter_initalize(){
 
-//     initNewsletter();
+    App::initalize_database();
 
-// }
-
-// function green_newsletter_uninstall(){
-//     deleteNewsletter();
-// }
+}
 
 $local = '/wp-content/plugins/green-newsletter/';
 

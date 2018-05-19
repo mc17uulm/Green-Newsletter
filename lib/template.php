@@ -37,4 +37,5 @@
         <input type="hidden" id="green_newsletter_type" value="<?= $mode ?>">
         <button type="button" id="green_newsletter_submit_btn" class="green_newsletter_btn"><i class="fa fa-paper-plane" aria-hidden="true"></i> Senden</button>
     </form>
+    <br>
     <div id="green_newsletter_info"></div>

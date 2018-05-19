@@ -1,6 +1,7 @@
 jQuery(document).ready(($) => {
 
     const btn = $('#green_newsletter_submit_btn');
+    const info = $('#green_newsletter_info');
 
     let sn = $('#green_newsletter_surname');
     let ln = $('#green_newsletter_lastname');
@@ -56,7 +57,11 @@ jQuery(document).ready(($) => {
                 data: data,
                 dataType: 'json',
                 success: (d) => {
-                    console.log(d);
+                    if(d["type"] === "error"){
+                        info.html(`<h3>Fehler!</h3><p>${d["text"]}</p>`);
+                    } else{
+                        info.html(`<h3>Erfolg!</h3><p>${d["text"]}</p>`);
+                    }
                 },
                 error: (e) => {
 

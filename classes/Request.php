@@ -24,6 +24,8 @@ if(!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)){
     )));
 }
 
+require_once "Processor.class.php";
+
 switch($mode){
 
     case "full":
@@ -38,25 +40,17 @@ switch($mode){
         $surname = strip_tags(trim($_POST["surname"]));
         $lastname = strip_tags(trim($_POST["lastname"]));
 
-        //TODO: implement full function
-
-        die(json_encode(array(
-            "type" => "success",
-            "email" => $email,
-            "surname" => $surname,
-            "lastname" => $lastname
-        )));
-        break;
+        Processor::addFullDataSet($email, $surname, $lastname);
 
     case "standard":
 
-        //TODO: implement standard function
+        Processor::addDataSet($email);
 
+    default:
         die(json_encode(array(
-            "type" => "success",
-            "email" => $email
-        )));
-        break;
+            'type' => 'error',
+            'text' => 'Invalid request 4'
+        )));  
 
 }
 
